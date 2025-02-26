@@ -1,38 +1,11 @@
-# sv
+# Tucker's Avatar
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Years ago a designer friend made an custom emoji version of me and I use it everywhere: profile pictures, my website favicon, etc.
 
-## Creating a project
+![Avatar](https://avatar.tuckergordon.dev/api?w=200&h=200&circle)
 
-If you're seeing this, you've probably already done this step. Congrats!
+But I wanted a way to change the avatar when my facial hair changes (which happens very frequently). So I created this repo, which includes:
 
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- An API to generate an avatar with certain facial hair (and other things like colors, as a circle, different output formats, etc.)
+- TODO: a UI for editing the avatar
+- TODO: workflows for updating the avatar across all the various sites where I'm using it
