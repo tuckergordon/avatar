@@ -1,0 +1,34 @@
+name: Update Avatars
+
+on:
+  workflow_dispatch:
+    inputs:
+      facialHair:
+        required: true
+
+jobs:
+  bsky:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.5.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.11
+          cache: 'pnpm'
+
+      # TODO: don't need all of sveltekit here
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Update Avatar
+        env:
+          BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
+          BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}
+          FACIAL_HAIR: ${{ github.event.inputs.facialHair }}
+        run: node --experimental-strip-types src/lib/scripts/bsky.ts
