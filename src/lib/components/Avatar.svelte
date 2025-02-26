@@ -5,5 +5,10 @@
 </script>
 
 <!-- TODO: make an editor to adjust the values -->
+ <!-- Also refactor to not need the await -->
 
-{@html Avatar(props)}
+{#await Avatar(props)}
+	<p>Loading...</p>
+{:then avatar}
+	{@html avatar}
+{/await}

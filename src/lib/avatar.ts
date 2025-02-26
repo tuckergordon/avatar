@@ -1,7 +1,7 @@
 import type { SvelteHTMLElements } from 'svelte/elements';
-import sharp from 'sharp';
+import { Image } from 'image-js';
 
-const CURRENT_FACIAL_HAIR = 'mustache';
+export const CURRENT_FACIAL_HAIR = 'mustache';
 
 export const DEFAULT_COLORS = {
 	shirt: '#113056',
@@ -38,14 +38,15 @@ export default async function Avatar({
 	}
 
 	if (format === 'png') {
-		const png = await sharp(Buffer.from(svgString)).png();
+		const image = await Image.load(Buffer.from(svgString));
+		const pngBuffer = await image.toBuffer({ format: 'image/png' });
 
 		if (uint8) {
-			const pngBuffer = await png.toBuffer();
 			return pngBuffer;
 		}
 
-		return png;
+		return pngBuffer;
+		// return pngBuffer.toString('base64');
 	}
 }
 
