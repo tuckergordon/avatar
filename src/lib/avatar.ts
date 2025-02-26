@@ -1,4 +1,5 @@
 import type { SvelteHTMLElements } from 'svelte/elements';
+import sharp from 'sharp';
 
 const CURRENT_FACIAL_HAIR = 'mustache';
 
@@ -14,10 +15,39 @@ export const DEFAULT_COLORS = {
 type FacialHairStyle = 'shaved' | 'mustache' | 'beard';
 
 export type AvatarProps = SvelteHTMLElements['svg'] & {
+	format?: 'svg' | 'png';
+	uint8?: boolean;
 	facialHair?: FacialHairStyle;
 	colors?: Partial<typeof DEFAULT_COLORS>;
 	circle?: boolean;
 };
+
+export default async function Avatar({
+	format = 'svg',
+	uint8 = false,
+	...props
+}: AvatarProps = {}) {
+	const svgString = getSvgString(props);
+
+	if (format === 'svg') {
+		if (uint8) {
+			return Buffer.from(svgString);
+		}
+
+		return svgString;
+	}
+
+	if (format === 'png') {
+		const png = await sharp(Buffer.from(svgString)).png();
+
+		if (uint8) {
+			const pngBuffer = await png.toBuffer();
+			return pngBuffer;
+		}
+
+		return png;
+	}
+}
 
 function getFacialHair(style: FacialHairStyle, color: string) {
 	switch (style) {
@@ -40,7 +70,7 @@ function getFacialHair(style: FacialHairStyle, color: string) {
 	}
 }
 
-export default function Avatar({ facialHair, colors, circle, ...rest }: AvatarProps = {}) {
+function getSvgString({ format, facialHair, colors, circle, ...rest }: AvatarProps = {}) {
 	const _facialHair = facialHair ?? CURRENT_FACIAL_HAIR;
 	const _colors = { ...DEFAULT_COLORS, ...colors };
 
