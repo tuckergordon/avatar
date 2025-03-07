@@ -40,7 +40,7 @@ function facialHairPath(style: FacialHairStyle, color: string) {
 	}
 }
 
-function avatarSVG({ format, facialHair, colors, circle, ...rest }: AvatarProps = {}) {
+function avatarSVG({ facialHair, colors, circle, ...rest }: AvatarProps = {}) {
 	const _facialHair = facialHair ?? CURRENT_FACIAL_HAIR;
 	const _colors = { ...DEFAULT_COLORS, ...colors };
 

@@ -8,10 +8,11 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint ."
+		"check": "npm run check:svelte && npm run check:lint && npm run check:format",
+		"check:svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:svelte:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"check:format": "prettier --write .",
+		"check:lint": "eslint ."
 	},
 	"devDependencies": {
 		"@atproto/api": "^0.14.6",

@@ -5,4 +5,6 @@
 </script>
 
 <!-- TODO: make an editor to adjust the values -->
+<!-- TODO: sanitize -->
+<!-- eslint-disable -->
 {@html avatarSVG(props)}
