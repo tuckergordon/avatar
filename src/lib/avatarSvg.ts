@@ -1,5 +1,4 @@
 import type { SvelteHTMLElements } from 'svelte/elements';
-import { Image } from 'image-js';
 
 export const CURRENT_FACIAL_HAIR = 'mustache';
 
@@ -15,42 +14,12 @@ export const DEFAULT_COLORS = {
 export type FacialHairStyle = 'shaved' | 'mustache' | 'beard';
 
 export type AvatarProps = SvelteHTMLElements['svg'] & {
-	format?: 'svg' | 'png';
-	uint8?: boolean;
 	facialHair?: FacialHairStyle;
 	colors?: Partial<typeof DEFAULT_COLORS>;
 	circle?: boolean;
 };
 
-export default async function Avatar({
-	format = 'svg',
-	uint8 = false,
-	...props
-}: AvatarProps = {}) {
-	const svgString = getSvgString(props);
-
-	if (format === 'svg') {
-		if (uint8) {
-			return Buffer.from(svgString);
-		}
-
-		return svgString;
-	}
-
-	if (format === 'png') {
-		const image = await Image.load(Buffer.from(svgString));
-		const pngBuffer = await image.toBuffer({ format: 'image/png' });
-
-		if (uint8) {
-			return pngBuffer;
-		}
-
-		return pngBuffer;
-		// return pngBuffer.toString('base64');
-	}
-}
-
-function getFacialHair(style: FacialHairStyle, color: string) {
+function facialHairPath(style: FacialHairStyle, color: string) {
 	switch (style) {
 		case 'mustache':
 			return `
@@ -71,7 +40,7 @@ function getFacialHair(style: FacialHairStyle, color: string) {
 	}
 }
 
-function getSvgString({ format, facialHair, colors, circle, ...rest }: AvatarProps = {}) {
+function avatarSVG({ format, facialHair, colors, circle, ...rest }: AvatarProps = {}) {
 	const _facialHair = facialHair ?? CURRENT_FACIAL_HAIR;
 	const _colors = { ...DEFAULT_COLORS, ...colors };
 
@@ -80,8 +49,13 @@ function getSvgString({ format, facialHair, colors, circle, ...rest }: AvatarPro
 		.join(' ');
 
 	return `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" ${svgProps}>
-      <g class="avatar" clip-path="${circle ? 'circle() view-box' : ''}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" ${svgProps}>
+        <defs>
+        <clipPath id="avatarClipPath">
+          <circle cx="250" cy="250" r="250" />
+        </clipPath>
+        </defs>
+        <g class="avatar" clip-path="${circle ? 'url(#avatarClipPath)' : ''}">
         <rect class="avatar-background" width="500" height="500" fill="${_colors.background}" />
         <g class="avatar-head">
           <g class="avatar-skin">
@@ -111,7 +85,7 @@ function getSvgString({ format, facialHair, colors, circle, ...rest }: AvatarPro
               fill="${_colors.skinShadow}"
             />
           </g>
-          ${getFacialHair(_facialHair, _colors.hair)}
+          ${facialHairPath(_facialHair, _colors.hair)}
           <path
             class="avatar-hair"
             d="M163.832,188.844c-2.198-26.819-6.847-56.217,5.658-81.26,13.908-27.852,44.617-36.45,73.745-37.561,27.479-1.048,61.709,2.704,79.916,25.66,18.655,23.522,17.634,64.845,13.767,93.161-1.245,9.118-3.123,18.141-4.252,27.265-.206.211-3.804-.674-3.967-1.161-.264-.787-.094-6.453-.045-7.73.776-20.214,1.381-40.465-2.607-60.404-1.787-8.935-4.523-18.317-9.642-25.893l-.557-.072c-21.675,6.23-43.61,12.917-65.723,17.47-5.551,1.143-11.293,2.229-16.915,2.97-2.581.34-5.252.59-7.85.657,6.555-2.673,13.362-5.222,19.194-9.323,1.164-.818,5.382-4.133,5.571-5.31.616-1.186,1.14-2.407,1.571-3.665-.73.304-1.253.275-1.571-.087-16.921,2.693-37.055,5.415-53.218,10.689-7.291,2.379-9.066,5.303-12.695,11.817-9.571,17.18-17.556,45.947-13,65.29.906,3.85-.019-.253.777,3.591l-5.994,1.161"
@@ -150,3 +124,5 @@ function getSvgString({ format, facialHair, colors, circle, ...rest }: AvatarPro
     </svg>
   `;
 }
+
+export default avatarSVG;

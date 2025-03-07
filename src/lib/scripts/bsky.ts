@@ -1,5 +1,6 @@
+import type { FacialHairStyle } from '$lib/avatarSvg';
+import { avatarPng } from '$lib/server/png';
 import { AtpAgent } from '@atproto/api';
-import Avatar, { type FacialHairStyle } from '../avatar.ts';
 
 const facialHair = process.env.FACIAL_HAIR as FacialHairStyle;
 
@@ -12,7 +13,7 @@ await agent.login({
 	password: '' + process.env.BSKY_PASSWORD
 });
 
-const avatarBlob = (await Avatar({ facialHair, format: 'png', uint8: true })) as Buffer;
+const avatarBlob = (await avatarPng({ facialHair, format: 'png' })) as Buffer;
 
 await agent.upsertProfile(async (existingProfile) => {
 	const { data } = await agent.uploadBlob(avatarBlob);
