@@ -13,7 +13,7 @@ await agent.login({
 	password: '' + process.env.BSKY_PASSWORD
 });
 
-const avatarBlob = (await avatarPng({ facialHair, format: 'png' })) as Buffer;
+const avatarBlob = (await avatarPng({ facialHair, width: 400, height: 400 })) as Buffer;
 
 await agent.upsertProfile(async (existingProfile) => {
 	const { data } = await agent.uploadBlob(avatarBlob);
